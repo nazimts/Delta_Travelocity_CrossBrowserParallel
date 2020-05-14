@@ -1,0 +1,20 @@
+node {
+    stage("Checkout") {
+     git 'https://github.com/duotechacademy/JenkinsCrossBrowserParallelTestingCucumberFramework'
+    }
+    stage("Chrome Tests") {
+       bat label: '', script: 'mvn verify -Dbrowser="chrome"'
+    }
+     stage("Edge Tests") {
+       bat label: '', script: 'mvn verify -Dbrowser="edge"'
+    }
+     stage("headlessChrome  Tests") {
+       bat label: '', script: 'mvn verify -Dbrowser="headlessChrome"'
+    }
+    stage("Report") {
+        junit '**/*Cucumber.xml'
+    }
+    stage("Email") {
+        step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: 'duotechinstructor@gmail.com', sendToIndividuals: false])
+    }
+}
